@@ -1,18 +1,18 @@
-FROM python:2.7
+FROM alpine
+LABEL maintainer "clement.desiles@telecomsante.com"
 
-COPY dockerize.sh /
+# in this image we ship the `dockerize` tool of larsks/dockerize
+ENV DOCKERIZE_VERSION="0.2.2"
+ENV DEPS="python rsync py-setuptools docker"
+ENV DEV_DEPS="build-base python-dev curl"
 
-RUN set -x \
-		&& mkdir /app && cd /app \
+RUN apk add ${DEV_DEPS} ${DEPS} -U --no-cache \
+    && curl -sSLO https://github.com/larsks/dockerize/archive/$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /tmp -xzvf $DOCKERIZE_VERSION.tar.gz \
+    && rm -f $DOCKERIZE_VERSION.tar.gz \
+    && cd /tmp/dockerize-$DOCKERIZE_VERSION \
+    && python setup.py install \
+    && rm -rf /tmp/dockerize-$DOCKERIZE_VERSION \
+    && apk del ${DEV_DEPS}
 
-		&& git clone https://github.com/larsks/dockerize.git . \
-		&& python setup.py install --optimize=2 \
-
-		&& curl -sSL -O https://get.docker.com/builds/Linux/x86_64/docker-1.10.1 \
-		&& mv docker-1.10.1 /usr/bin/docker \
-		&& chmod +x /usr/bin/docker \
-
-		&& cd / && rm -rf /app
-
-ENTRYPOINT /dockerize.sh
-
+ENTRYPOINT ["/usr/bin/dockerize"]
