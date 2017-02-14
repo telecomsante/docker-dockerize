@@ -60,6 +60,14 @@ dockerize() {
 
 > We automatically mount your executable file in the `/tmp/<path-to-stuff>` folder, to not override eventual container internal tools...
 
+Usage is now transparent:
+
+```sh
+dockerize -t docker-ls /bin/ls
+```
+
+> Keep in mind we do expect absolute paths here.
+
 Credits
 -------
 
