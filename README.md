@@ -30,8 +30,8 @@ To use the generated image:
 ```sh
 docker run -it \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  -v /usr/bin/ls:/tmp \
-  dockerize -t docker-ls /ls
+  -v /usr/bin/ls:/tmp/ls \
+  dockerize -t docker-ls /tmp/ls
 ```
 
 Your new little image containing only ls is now ready:
